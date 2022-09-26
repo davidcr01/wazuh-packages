@@ -87,8 +87,8 @@ chmod 640 %{buildroot}/etc/default/wazuh-dashboard
 
 rm -rf %{buildroot}%{INSTALL_DIR}/etc/
 
-find %{buildroot}%{INSTALL_DIR} -exec chown %{USER}:%{GROUP} {} \;
-find %{buildroot}%{CONFIG_DIR} -exec chown %{USER}:%{GROUP} {} \;
+find %{buildroot}%{INSTALL_DIR} -print0 | xargs -0 chown %{USER}:%{GROUP}
+find %{buildroot}%{CONFIG_DIR} -print0 | xargs -0 chown %{USER}:%{GROUP}
 
 chown %{USER}:%{GROUP} %{buildroot}/etc/systemd/system/wazuh-dashboard.service
 chown %{USER}:%{GROUP} %{buildroot}/etc/init.d/wazuh-dashboard
@@ -99,7 +99,7 @@ else
     runuser %{USER} --shell="/bin/bash" --command="%{buildroot}%{INSTALL_DIR}/bin/opensearch-dashboards-plugin install https://packages-dev.wazuh.com/pre-release/ui/dashboard/wazuh-%{version}-%{release}.zip"
 fi
 
-find %{buildroot}%{INSTALL_DIR}/plugins/wazuh/ -exec chown %{USER}:%{GROUP} {} \;
+find %{buildroot}%{INSTALL_DIR}/plugins/wazuh/ -print0 | xargs -0 chown %{USER}:%{GROUP}
 find %{buildroot}%{INSTALL_DIR}/plugins/wazuh/ -type f -perm 644 -exec chmod 640 {} \;
 find %{buildroot}%{INSTALL_DIR}/plugins/wazuh/ -type f -perm 755 -exec chmod 750 {} \;
 find %{buildroot}%{INSTALL_DIR}/plugins/wazuh/ -type d -exec chmod 750 {} \;

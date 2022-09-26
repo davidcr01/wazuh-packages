@@ -26,17 +26,17 @@ fi
 
 # Remove old ossec user and group if exists and change ownwership of files
 if grep "^ossec:" /etc/group > /dev/null 2>&1; then
-  find ${install_path}/ -group ossec -user root -exec chown root:wazuh {} \; > /dev/null 2>&1 || true
+  find ${install_path}/ -group ossec -user root -print0 | xargs -0 chown root:wazuh > /dev/null 2>&1 || true
   if grep "^ossec" /etc/passwd > /dev/null 2>&1; then
-    find ${install_path}/ -group ossec -user ossec -exec chown wazuh:wazuh {} \; > /dev/null 2>&1 || true
+    find ${install_path}/ -group ossec -user ossec -print0 | xargs -0 chown wazuh:wazuh > /dev/null 2>&1 || true
     userdel ossec
   fi
   if grep "^ossecm" /etc/passwd > /dev/null 2>&1; then
-    find ${install_path}/ -group ossec -user ossecm -exec chown wazuh:wazuh {} \; > /dev/null 2>&1 || true
+    find ${install_path}/ -group ossec -user ossecm -print0 | xargs -0 chown wazuh:wazuh > /dev/null 2>&1 || true
     userdel ossecm
   fi
   if grep "^ossecr" /etc/passwd > /dev/null 2>&1; then
-    find ${install_path}/ -group ossec -user ossecr -exec chown wazuh:wazuh {} \; > /dev/null 2>&1 || true
+    find ${install_path}/ -group ossec -user ossecr -print0 | xargs -0 chown wazuh:wazuh > /dev/null 2>&1 || true
     userdel ossecr
   fi
   groupdel ossec
