@@ -155,6 +155,9 @@ compile() {
 
     $SOURCE/install.sh || exit 1
 
+    echo "Exiting with error to test playbook on fails"
+    exit 1
+
     mkdir -p ${install_path}/tmp/sca/sunos/
     cp -r $SOURCE/etc/templates/config/sunos/5/  ${install_path}/tmp/sca/sunos/
     cp $SOURCE/ruleset/sca/sunos/* ${install_path}/tmp/sca/sunos/
