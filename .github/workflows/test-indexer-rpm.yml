@@ -34,4 +34,4 @@ jobs:
       #     sudo cp ./output/$PACKAGE_NAME $GITHUB_WORKSPACE/$PACKAGE_NAME
       - name: Launch docker
         run: |
-          sudo docker run centos:centos7 .github/actions/upgrade-indexer/upgrade-indexer-debian.sh
+          sudo docker run centos:centos7 bash .github/actions/upgrade-indexer/upgrade-indexer-debian.sh
