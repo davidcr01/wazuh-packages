@@ -32,10 +32,13 @@ jobs:
       #   run: |
       #     echo $PACKAGE_NAME
       #     sudo cp ./output/$PACKAGE_NAME $GITHUB_WORKSPACE/$PACKAGE_NAME
+      - name: Get Wazuh Version
+        run: echo "wazuh_version=$(cat VERSION | cut -d'v' -f2)" >> $GITHUB_ENV
       - uses: actions/checkout@v3
         with:
          ref: 1850-wazuh-indexer-preserve-config-files-upon-upgrade-master
       - name: Launch docker
         run: |
-          echo $(ls .github/)
+          echo $wazuh_version
+          echo $(ls .github/actions)
           sudo docker run centos:centos7 bash .github/actions/upgrade-indexer/upgrade-indexer-rpm.sh
