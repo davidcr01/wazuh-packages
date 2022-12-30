@@ -35,5 +35,5 @@ jobs:
       #   run: echo "wazuh_minor=$(cat VERSION | cut -d'.' -f 2)" >> $GITHUB_ENV
       - name: Launch docker
         run: |
-          echo $(ls .github/actions/upgrade-indexer/)
-          sudo docker run -v $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/:/tests -v $GITHUB_WORKSPACE/$PACKAGE_NAME/:/tests/packages centos:centos7 bash /tests/upgrade-indexer-rpm.sh /tests/packages/$PACKAGE_NAME
+          echo $(ls $GITHUB_WORKSPACE)
+          sudo docker run -v $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/:/tests -v $GITHUB_WORKSPACE/$PACKAGE_NAME/:/tests/packages centos:centos8 bash /tests/upgrade-indexer-rpm.sh /tests/packages/$PACKAGE_NAME
