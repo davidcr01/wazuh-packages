@@ -9,8 +9,8 @@ equal=true
 
 # Compare the arrays, the loop ends if a different checksum is detected
 function compare_arrays() {
-    local array_old=$1
-    local array_new=$2
+    declare -n array_old=$1
+    declare -n array_new=$2
 
     for i in "${!array_old[@]}"; do
         echo "Comparing $i file checksum..."
@@ -33,7 +33,7 @@ function preinstall_indexer_release() {
 
 # Reads the files passed by param and store their checksum in the array
 function read_files() {
-    local files=$2
+    declare -n files=$2
 
     for f in $1/*; do
         if [ -f $f ]; then
@@ -54,7 +54,7 @@ function read_files() {
 
 # Prints associative array of the files passed by params
 function print_files() {
-    local files=$1
+    declare -n files=$1
 
     for KEY in "${!files[@]}"; do
         # Print the KEY value
@@ -69,7 +69,7 @@ echo $(ls)
 echo "......................."
 
 echo "......................."
-echo $(ls /tests/)
+echo $(ls /packages/)
 echo "......................."
 
 echo "Installing old version of wazuh indexer..."
