@@ -37,5 +37,5 @@ jobs:
          ref: 1850-wazuh-indexer-preserve-config-files-upon-upgrade-master
       - name: Launch docker
         run: |
-          echo $(ls)
-          sudo docker run centos:centos7 .github/actions/upgrade-indexer/upgrade-indexer-rpm.sh
+          echo $(ls .github/)
+          sudo docker run centos:centos7 bash .github/actions/upgrade-indexer/upgrade-indexer-rpm.sh
