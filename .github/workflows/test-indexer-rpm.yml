@@ -34,5 +34,5 @@ jobs:
       #     sudo cp ./output/$PACKAGE_NAME $GITHUB_WORKSPACE/$PACKAGE_NAME
       - name: Launch docker
         run: |
-          echo $(ls .github/actions/upgrade-indexer/)
+          echo $(ls)
           sudo docker run centos:centos7 bash .github/actions/upgrade-indexer/upgrade-indexer-rpm.sh
