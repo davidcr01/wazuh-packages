@@ -69,10 +69,10 @@ echo $(ls)
 echo "......................."
 
 echo "......................."
-echo $(ls /tests/packages/)
+echo $(ls /tests/)
 echo "......................."
 
-sudo yum -y update bash
+yum -y update bash
 
 echo "Installing old version of wazuh indexer..."
 preinstall_indexer_release
