@@ -40,4 +40,4 @@ jobs:
       - name: Launch docker
         run: |
           echo $(ls .github/actions/upgrade-indexer/)
-          sudo docker run -v .github/actions/upgrade-indexer/:/tests centos:centos7 bash /tests/upgrade-indexer-rpm.sh
+          sudo docker run -v $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/:/tests centos:centos7 bash /tests/upgrade-indexer-rpm.sh
