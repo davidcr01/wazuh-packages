@@ -33,6 +33,8 @@ jobs:
       #     echo $PACKAGE_NAME
       #     sudo cp ./output/$PACKAGE_NAME $GITHUB_WORKSPACE/$PACKAGE_NAME
       - uses: actions/checkout@v3
+        with:
+         ref: 1850-wazuh-indexer-preserve-config-files-upon-upgrade-master
       - name: Launch docker
         run: |
           echo $(ls)
