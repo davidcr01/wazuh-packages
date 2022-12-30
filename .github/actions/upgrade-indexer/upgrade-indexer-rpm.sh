@@ -69,7 +69,7 @@ echo $(ls)
 echo "......................."
 
 echo "......................."
-echo $(ls /tests/packages/)
+echo $(ls /tests/)
 echo "......................."
 
 echo "Installing old version of wazuh indexer..."
