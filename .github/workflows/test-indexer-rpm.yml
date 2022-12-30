@@ -35,4 +35,4 @@ jobs:
         run: |
           echo $(ls $GITHUB_WORKSPACE)
           echo $(ls $GITHUB_WORKSPACE/packages/$PACKAGE_NAME)
-          sudo docker run -v $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/:/tests -v $GITHUB_WORKSPACE/packages/:/packages centos:centos7 bash /tests/upgrade-indexer-rpm.sh /packages/$PACKAGE_NAME
+          sudo docker run -v $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/:/tests -v $GITHUB_WORKSPACE/packages/:/packages centos:centos8 bash /tests/upgrade-indexer-rpm.sh /packages/$PACKAGE_NAME
