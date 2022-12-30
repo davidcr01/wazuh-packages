@@ -9,8 +9,8 @@ equal=true
 
 # Compare the arrays, the loop ends if a different checksum is detected
 function compare_arrays() {
-    declare -n array_old=$1
-    declare -n array_new=$2
+    local -n array_old=$1
+    local -n array_new=$2
 
     for i in "${!array_old[@]}"; do
         echo "Comparing $i file checksum..."
@@ -33,7 +33,7 @@ function preinstall_indexer_release() {
 
 # Reads the files passed by param and store their checksum in the array
 function read_files() {
-    declare -n files=$2
+    local -n files=$2
 
     for f in $1/*; do
         if [ -f $f ]; then
@@ -54,7 +54,7 @@ function read_files() {
 
 # Prints associative array of the files passed by params
 function print_files() {
-    declare -n files=$1
+    local -n files=$1
 
     for KEY in "${!files[@]}"; do
         # Print the KEY value
