@@ -64,6 +64,16 @@ function print_files() {
     done
 }
 
+echo "......................."
+echo $(ls)
+echo "......................."
+
+echo "......................."
+echo $(ls /tests/packages/)
+echo "......................."
+
+sudo yum -y update bash
+
 echo "Installing old version of wazuh indexer..."
 preinstall_indexer_release
 yum -y install wazuh-indexer
