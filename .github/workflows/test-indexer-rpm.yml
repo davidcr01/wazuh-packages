@@ -36,4 +36,4 @@ jobs:
       - name: Launch docker
         run: |
           echo $(ls)
-          sudo docker run centos:centos7 bash .github/actions/upgrade-indexer/upgrade-indexer-rpm.sh
+          sudo docker run centos:centos7 .github/actions/upgrade-indexer/upgrade-indexer-rpm.sh
