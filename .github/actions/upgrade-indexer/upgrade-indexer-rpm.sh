@@ -69,7 +69,7 @@ echo $(ls)
 echo "......................."
 
 echo "......................."
-echo $(ls /tests/)
+echo $(ls /tests/packages)
 echo "......................."
 
 yum -y update bash
