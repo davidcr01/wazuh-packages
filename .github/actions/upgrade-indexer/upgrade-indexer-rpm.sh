@@ -90,6 +90,7 @@ echo "FILES_OLD VARIABLE: $FILES_OLD"
 
 echo "Checking version..."
 check_version
+echo "FILES_OLD VARIABLE: $FILES_OLD"
 
 echo "Installing old version of wazuh indexer..."
 preinstall_indexer_release
