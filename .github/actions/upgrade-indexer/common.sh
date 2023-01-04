@@ -46,6 +46,12 @@ function compare_arrays() {
     done
 }
 
+# Steps before installing the RPM release package
+function preinstall_indexer_release() {
+    rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH
+    echo -e '[wazuh]\ngpgcheck=1\ngpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH\nenabled=1\nname=EL-$releasever - Wazuh\nbaseurl=https://packages.wazuh.com/4.x/yum/\nprotect=1' | tee /etc/yum.repos.d/wazuh.repo
+}
+
 # Reads the files passed by param and store their checksum in the array
 function read_files() {
 
