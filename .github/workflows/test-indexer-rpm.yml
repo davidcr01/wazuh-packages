@@ -41,4 +41,4 @@ jobs:
         run: |
           echo $(ls $GITHUB_WORKSPACE)
           echo $(ls $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/)
-          sudo docker run -v $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/:/tests -v $GITHUB_WORKSPACE/packages/:/packages centos:centos7 sudo cp -a /tests/common.sh .; ls; bash ./upgrade-indexer-debian.sh /packages/$PACKAGE_NAME
+          sudo docker run -v $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/:/tests -v $GITHUB_WORKSPACE/packages/:/packages centos:centos7 cp /tests/common.sh .; ls; bash ./upgrade-indexer-debian.sh /packages/$PACKAGE_NAME
