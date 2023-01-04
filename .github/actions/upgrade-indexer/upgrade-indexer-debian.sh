@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./common.sh
+echo $(ls)
 
 check_system
 
