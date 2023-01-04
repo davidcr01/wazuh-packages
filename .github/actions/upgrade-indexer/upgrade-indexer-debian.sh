@@ -9,6 +9,9 @@ if [ $sys_type == "deb" ]; then
 elif [ $sys_type == "rpm" ]; then
     preinstall_indexer_release
     yum -y install wazuh-indexer
+else
+    echo "Error: No system detected"
+    exit 1
 fi
 
 
