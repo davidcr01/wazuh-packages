@@ -38,4 +38,4 @@ jobs:
       - name: Run script
         working-directory: .github/actions/upgrade-indexer/
         run: |
-          sudo bash ./upgrade-indexer-debian.sh $PACKAGE_NAME
+          sudo bash ./upgrade-indexer-debian.sh $GITHUB_WORKSPACE/$PACKAGE_NAME
