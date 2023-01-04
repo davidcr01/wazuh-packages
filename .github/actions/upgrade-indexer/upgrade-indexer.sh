@@ -1,7 +1,9 @@
 #!/bin/bash
-. ./common.sh
-echo $(ls)
+RELATIVE_PATH="$(dirname -- "${BASH_SOURCE[0]}")"
+ABSOLUTE_PATH="$(cd -- "$RELATIVE_PATH" && pwd)"
 
+
+. $ABSOLUTE_PATH/common.sh
 check_system
 
 echo "Installing old version of wazuh indexer..."
