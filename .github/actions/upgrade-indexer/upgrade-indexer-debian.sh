@@ -23,9 +23,9 @@ print_files "old"
 echo "Installing new version of wazuh indexer..."
 
 if [ $sys_type == "deb" ]; then
-    apt-get install ./$PACKAGE_NAME
+    apt-get install $PACKAGE_NAME
 elif [ $sys_type == "rpm" ]; then
-    install ./$PACKAGE_NAME
+    rpm -Uvh --nofiledigest $PACKAGE_NAME
 fi
 
 read_files "$FILES_NEW" "new"
