@@ -10,15 +10,15 @@ REFERENCE_VERSION=43
 equal=true
 
 # Checks the version of Wazuh with 4.3 version, where path is different.
-function check_version() {
-    if [ $WAZUH_VERSION -gt $REFERENCE_VERSION ]; then
-        # same path
-        FILES_OLD=$FILES_NEW
-        echo "New path detected (/etc)"
-    else
-        echo "Old path detected (/usr/share)"
-    fi
-}
+#function check_version() {
+#    if [ $WAZUH_VERSION -gt $REFERENCE_VERSION ]; then
+#        # same path
+#        FILES_OLD=$FILES_NEW
+#        echo "New path detected (/etc)"
+#    else
+#        echo "Old path detected (/usr/share)"
+#    fi
+#}
 
 # Compare the arrays, the loop ends if a different checksum is detected
 function compare_arrays() {
@@ -86,17 +86,9 @@ function print_files() {
     fi
 }
 
-echo "FILES_OLD VARIABLE: $FILES_OLD"
-
-echo "Checking version..."
-check_version
-echo "FILES_OLD VARIABLE: $FILES_OLD"
-
 echo "Installing old version of wazuh indexer..."
-# preinstall_indexer_release
-# yum -y install wazuh-indexer
-curl 'https://packages-dev.wazuh.com/staging/yum/wazuh-indexer-4.4.0-1.x86_64.rpm' --output wazuh-indexer-4.4.0-1.x86_64.rpm
-rpm -i ./wazuh-indexer-4.4.0-1.x86_64.rpm
+preinstall_indexer_release
+yum -y install wazuh-indexer
 
 read_files "$FILES_OLD" "old"
 echo "Old files..."
@@ -114,5 +106,5 @@ if [ $equal == false ]; then
         echo "Error: different checksums detected"
         exit 1
 fi
-echo "Same chechsums - Test passed correctly"
+echo "Same checksums - Test passed correctly"
 exit 0

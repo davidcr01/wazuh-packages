@@ -9,14 +9,12 @@ equal=true
 
 # Compare the arrays, the loop ends if a different checksum is detected
 function compare_arrays() {
-    local -n array_old=$1
-    local -n array_new=$2
 
-    for i in "${!array_old[@]}"; do
+    for i in "${!files_old[@]}"; do
         echo "Comparing $i file checksum..."
-        echo "Old: ${array_old[$i]}"
-        echo "New: ${array_new[$i]}"
-        if [[ "${array_old[$i]}" == "${array_new[$i]}" ]]; then
+        echo "Old: ${files_old[$i]}"
+        echo "New: ${files_new[$i]}"
+        if [[ "${files_old[$i]}" == "${files_new[$i]}" ]]; then
             echo "$i - Same checksum"
         else
             echo "$i - Different checksum"
@@ -28,56 +26,66 @@ function compare_arrays() {
 
 # Reads the files passed by param and store their checksum in the array
 function read_files() {
-    local -n files=$2
 
     for f in $1/*; do
         if [ -f $f ]; then
             echo "Processing $f file..."
 
             # Change only the old files
-            if [ $2 == "files_old" ]; then
+            if [ $2 == "old" ]; then
                 echo "# This is a test" >> $f
                 echo "Changed file"
             fi
             checksum=`md5sum $f | cut -d " " -f1`
 
             basename=`basename $f`
-            files[$basename]=$checksum
+            if [ $2 == "old" ]; then
+                files_old["$basename"]=$checksum
+            elif [ $2 == "new" ]; then
+                files_new["$basename"]=$checksum
+            fi
         fi
     done
 }
 
 # Prints associative array of the files passed by params
 function print_files() {
-    local -n files=$1
 
-    for KEY in "${!files[@]}"; do
-        # Print the KEY value
-        echo "Key: $KEY"
-        # Print the VALUE attached to that KEY
-        echo "Value: ${files[$KEY]}"
-    done
+    if [ $1 == "old" ]; then
+        for KEY in "${!files_old[@]}"; do
+            # Print the KEY value
+            echo "Key: $KEY"
+            # Print the VALUE attached to that KEY
+            echo "Value: ${files_old[$KEY]}"
+        done
+    elif [ $1 == "new" ]; then
+        for KEY in "${!files_new[@]}"; do
+            # Print the KEY value
+            echo "Key: $KEY"
+            # Print the VALUE attached to that KEY
+            echo "Value: ${files_new[$KEY]}"
+        done
+    fi
 }
-
-echo $(ls)
 
 echo "Installing old version of wazuh indexer..."
 apt-get -y install wazuh-indexer
-read_files "$FILES_OLD" files_old
+
+read_files "$FILES_OLD" "old"
 echo "Old files..."
-print_files files_old
+print_files "old"
 
 echo "Installing new version of wazuh indexer..."
 apt-get install ./$PACKAGE_NAME
-read_files "$FILES_NEW" files_new
+read_files "$FILES_NEW" "new"
 echo "New files..."
-print_files files_new
+print_files "new"
 
-compare_arrays files_old files_new
+compare_arrays
 
 if [ $equal == false ]; then
         echo "Error: different checksums detected"
         exit 1
 fi
-echo "Same chechsums - Test passed correctly"
+echo "Same checksums - Test passed correctly"
 exit 0
