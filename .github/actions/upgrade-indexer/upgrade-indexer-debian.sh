@@ -1,6 +1,8 @@
 #!/bin/bash
 . ./common.sh
 
+check_system
+
 echo "Installing old version of wazuh indexer..."
 if [ $sys_type == "deb" ]; then
     apt-get -y install wazuh-indexer
