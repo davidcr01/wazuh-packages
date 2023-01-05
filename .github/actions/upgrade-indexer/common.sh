@@ -55,7 +55,7 @@ function preinstall_indexer_release() {
 # Reads the files passed by param and store their checksum in the array
 function read_files() {
 
-    for f in "${1}/*"; do
+    for f in ${1}/*; do
         if [ -f $f ]; then
             echo "Processing $f file..."
 
