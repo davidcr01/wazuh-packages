@@ -46,6 +46,12 @@ function compare_arrays() {
     done
 }
 
+# Gets the absolute path of the script, used to load the common.sh file
+function get_absolute_path() {
+    RELATIVE_PATH="$(dirname -- "${BASH_SOURCE[0]}")"
+    ABSOLUTE_PATH="$(cd -- "$RELATIVE_PATH" && pwd)"
+}
+
 # Steps before installing the RPM release package
 function preinstall_indexer_release() {
     rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH
@@ -55,7 +61,7 @@ function preinstall_indexer_release() {
 # Reads the files passed by param and store their checksum in the array
 function read_files() {
 
-    for f in $1/*; do
+    for f in "${1}/*"; do
         if [ -f $f ]; then
             echo "Processing $f file..."
 

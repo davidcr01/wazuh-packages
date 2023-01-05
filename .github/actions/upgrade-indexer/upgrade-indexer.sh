@@ -1,8 +1,6 @@
 #!/bin/bash
-RELATIVE_PATH="$(dirname -- "${BASH_SOURCE[0]}")"
-ABSOLUTE_PATH="$(cd -- "$RELATIVE_PATH" && pwd)"
 
-
+get_absolute_path
 . $ABSOLUTE_PATH/common.sh
 check_system
 
@@ -17,13 +15,11 @@ else
     exit 1
 fi
 
-
 read_files "$FILES_OLD" "old"
 echo "Old files..."
 print_files "old"
 
 echo "Installing new version of wazuh indexer..."
-
 if [ $sys_type == "deb" ]; then
     apt-get install $PACKAGE_NAME
 elif [ $sys_type == "rpm" ]; then
@@ -35,7 +31,6 @@ echo "New files..."
 print_files "new"
 
 compare_arrays
-
 if [ $EQUAL == false ]; then
         echo "Error: different checksums detected"
         exit 1

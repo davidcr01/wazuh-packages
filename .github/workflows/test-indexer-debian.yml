@@ -36,6 +36,4 @@ jobs:
           echo $PACKAGE_NAME
           sudo cp ./$PACKAGE_NAME $GITHUB_WORKSPACE/$PACKAGE_NAME
       - name: Run script
-        working-directory: .github/actions/upgrade-indexer/
-        run: |
-          sudo bash ./upgrade-indexer.sh $GITHUB_WORKSPACE/$PACKAGE_NAME
+        run: sudo bash $GITHUB_WORKSPACE/.github/actions/upgrade-indexer/upgrade-indexer.sh $GITHUB_WORKSPACE/$PACKAGE_NAME
