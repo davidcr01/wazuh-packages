@@ -7,8 +7,6 @@ PACKAGE_NAME="$1"
 MAJOR_MINOR_RELEASE=$(($2))
 REFERENCE_VERSION=43
 
-EQUAL=true
-
 # Check the system to differ between DEB and RPM
 function check_system() {
 
@@ -49,10 +47,10 @@ function compare_arrays() {
             echo "$i - Same checksum."
         else
             echo "$i - Different checksum."
-            EQUAL=false
-            break
+            return false
         fi
     done
+    return true
 }
 
 # Steps before installing the RPM release package.

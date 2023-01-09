@@ -8,6 +8,7 @@ function get_absolute_path() {
 get_absolute_path
 . $ABSOLUTE_PATH/common.sh
 check_system
+check_version
 
 echo "Installing old version of wazuh indexer..."
 if [ $sys_type == "deb" ]; then
@@ -36,7 +37,7 @@ echo "New files..."
 print_files "new"
 
 compare_arrays
-if [ $EQUAL == false ]; then
+if [ compare_arrays == false ]; then
         echo "Error: different checksums detected"
         exit 1
 fi
