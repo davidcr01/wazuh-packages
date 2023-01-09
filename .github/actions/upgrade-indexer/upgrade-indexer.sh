@@ -37,7 +37,7 @@ echo "New files..."
 print_files "new"
 
 compare_arrays
-if [ compare_arrays == false ]; then
+if [ ! compare_arrays ]; then
         echo "Error: different checksums detected"
         exit 1
 fi

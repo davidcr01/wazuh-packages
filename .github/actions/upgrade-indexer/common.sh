@@ -47,10 +47,10 @@ function compare_arrays() {
             echo "$i - Same checksum."
         else
             echo "$i - Different checksum."
-            return false
+            return 1
         fi
     done
-    return true
+    return 0
 }
 
 # Steps before installing the RPM release package.
