@@ -23,8 +23,14 @@ function check_system() {
 
 # Checks the version of Wazuh with 4.3 version, where path is different.
 function check_version() {
+
     if [ -z "${MAJOR_MINOR_RELEASE}" ]; then
-        echo "Error: second argument expected"
+        echo "Error: second argument expected."
+        exit 1
+    fi
+
+    if [ -z "${REFERENCE_VERSION}" ]; then
+        echo "Error: REFERENCE_VERSION is empty."
         exit 1
     fi
 
@@ -34,6 +40,7 @@ function check_version() {
     else
         echo "Old path detected (/usr/share)."
     fi
+
 }
 
 # Compare the arrays, the loop ends if a different checksum is detected
@@ -51,12 +58,15 @@ function compare_arrays() {
         fi
     done
     return 0
+
 }
 
 # Steps before installing the RPM release package.
-function preinstall_indexer_release() {
+function add_production_repository() {
+
     rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH
     echo -e '[wazuh]\ngpgcheck=1\ngpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH\nenabled=1\nname=EL-$releasever - Wazuh\nbaseurl=https://packages.wazuh.com/4.x/yum/\nprotect=1' | tee /etc/yum.repos.d/wazuh.repo
+
 }
 
 # Reads the files passed by param and store their checksum in the array
@@ -86,6 +96,7 @@ function read_files() {
             fi
         fi
     done
+
 }
 
 # Prints associative array of the files passed by params
