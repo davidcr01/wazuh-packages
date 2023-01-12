@@ -5,7 +5,7 @@ declare -A files_old
 declare -A files_new
 PACKAGE_NAME="${1}"
 MAJOR_MINOR_RELEASE=$((${2}))
-REFERENCE_VERSION=43
+REFERENCE_VERSION=""
 
 # Check the system to differ between DEB and RPM
 function check_system() {
