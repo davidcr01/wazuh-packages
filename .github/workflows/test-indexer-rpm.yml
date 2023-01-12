@@ -1,5 +1,6 @@
 name: Test the preserving of security config files upon upgrade - Wazuh indexer - RPM
 on:
+  push:
   pull_request:
     paths:
       - 'stack/indexer/rpm/wazuh-indexer.spec'

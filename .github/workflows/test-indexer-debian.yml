@@ -1,5 +1,6 @@
 name: Test the preserving of security config files upon upgrade - Wazuh indexer - Debian
 on:
+  push:
   pull_request:
     paths:
       - 'stack/indexer/deb/debian/*'
