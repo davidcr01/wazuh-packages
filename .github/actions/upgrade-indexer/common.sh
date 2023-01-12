@@ -82,7 +82,7 @@ function read_files() {
 
             # Change only the old files
             if [ "${2}" == "old" ]; then
-                echo "# This is a test" >> ${f}
+                echo "# This is a test" >> $f
                 echo "Changed file."
             fi
             checksum=`md5sum ${f} | cut -d " " -f1`
