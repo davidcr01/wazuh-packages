@@ -90,16 +90,18 @@ function read_files() {
 
 # Prints associative array of the files passed by params
 function print_files() {
+
     aux=$(declare -p "$1")
     eval "declare -A arr="${aux#*=}
 
-        if [ "${#arr[@]}" -eq 0 ]; then
-            echo "Error: the array didn't scan correctly."
-            exit 1
-        fi
+    if [ "${#arr[@]}" -eq 0 ]; then
+        echo "Error: the array didn't scan correctly."
+        exit 1
+    fi
 
-        for KEY in "${!arr[@]}"; do
-            echo "Key: ${KEY}"
-            echo "Value: ${arr[${KEY}]}"
-        done
+    for KEY in "${!arr[@]}"; do
+        echo "Key: ${KEY}"
+        echo "Value: ${arr[${KEY}]}"
+    done
+
 }

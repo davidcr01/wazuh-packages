@@ -29,7 +29,7 @@ echo "Installing new version of wazuh indexer..."
 if [ ${sys_type} == "deb" ]; then
     apt-get install $PACKAGE_NAME
 elif [ ${sys_type} == "rpm" ]; then
-    rpm -Uvh --nofiledigest $PACKAGE_NAME
+    yum install $PACKAGE_NAME
 fi
 
 read_files "${FILES_NEW}" "new"
