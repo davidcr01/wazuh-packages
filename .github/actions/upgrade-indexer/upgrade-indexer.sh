@@ -23,7 +23,7 @@ fi
 
 read_files "${FILES_OLD}" "old"
 echo "Old files..."
-print_files "${files_old[@]}"
+print_files "files_old"
 
 echo "Installing new version of wazuh indexer..."
 if [ ${sys_type} == "deb" ]; then
@@ -34,7 +34,7 @@ fi
 
 read_files "${FILES_NEW}" "new"
 echo "New files..."
-print_files "${files_old[@]}"
+print_files "files_new"
 
 compare_arrays
 if [ ! compare_arrays ]; then
