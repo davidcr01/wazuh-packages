@@ -1,12 +1,9 @@
 #!/bin/bash
 
 # Gets the absolute path of the script, used to load the common.sh file
-function get_absolute_path() {
-    ABSOLUTE_PATH="$( cd $(dirname ${0}) ; pwd -P )"
-}
-
-get_absolute_path
+ABSOLUTE_PATH="$( cd $(dirname ${0}) ; pwd -P )"
 . ${ABSOLUTE_PATH}/common.sh
+
 check_system
 check_version
 
