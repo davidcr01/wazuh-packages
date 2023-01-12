@@ -81,10 +81,10 @@ function read_files() {
             echo "Processing ${f} file..."
 
             # Change only the old files
-            if [ "${2}" == "old" ]; then
+
                 echo "# This is a test" >> ${f}
                 echo "Changed file."
-            fi
+
             checksum=`md5sum ${f} | cut -d " " -f1`
 
             basename=`basename ${f}`
