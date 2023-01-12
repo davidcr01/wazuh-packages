@@ -33,8 +33,8 @@ read_files "${FILES_NEW}" "new"
 echo "New files..."
 print_files "files_new"
 
-res=compare_arrays
-if [ "${res}" -eq 1 ]; then
+compare_arrays
+if [ "$?" -eq 1 ]; then
     echo "Error: different checksums detected"
     exit 1
 fi
