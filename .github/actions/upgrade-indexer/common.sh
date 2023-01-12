@@ -90,25 +90,14 @@ function read_files() {
 
 # Prints associative array of the files passed by params
 function print_files() {
-    if [ "${1}" == "old" ]; then
-        if [ "${#files_old[@]}" -eq 0 ]; then
+    arr=("$@")
+        if [ "${#arr[@]}" -eq 0 ]; then
             echo "Error: the old version didn't scan correctly."
             exit 1
         fi
 
-        for KEY in "${!files_old[@]}"; do
+        for KEY in "${!arr[@]}"; do
             echo "Key: ${KEY}"
-            echo "Value: ${files_old[${KEY}]}"
+            echo "Value: ${arr[${KEY}]}"
         done
-    elif [ "${1}" == "new" ]; then
-        if [ "${#files_new[@]}" -eq 0 ]; then
-            echo "Error: the new version didn't scan correctly."
-            exit 1
-        fi
-
-        for KEY in "${!files_new[@]}"; do
-            echo "Key: ${KEY}"
-            echo "Value: ${files_new[${KEY}]}"
-        done
-    fi
 }
