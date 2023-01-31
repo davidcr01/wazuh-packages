@@ -1,9 +1,9 @@
 name: Offline installation test
 on:
+  push:
   pull_request:
     paths:
       - 'unattended_installer/passwords_tool/**'
-    push:
 
 jobs:
   Build-wazuh-install-script:
