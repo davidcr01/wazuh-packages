@@ -161,9 +161,7 @@ function filebeat_installation(){
 
     enable_start_service "filebeat"
 
-    filebeat test output
-    sleep 1
-    eval "curl -k -u admin:admin 'https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards' | grep number_of_shards"
+    eval "filebeat test output"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "Error: The Filebeat installation has failed."
         exit 1
