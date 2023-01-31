@@ -34,7 +34,7 @@ jobs:
           name: script
           path: $GITHUB_WORKSPACE/.github/actions/offline-installation/
       - name: List files
-        run: ls -l
+        run: ls -l $GITHUB_WORKSPACE/.github/actions/offline-installation/
       - name: Run script
         run: sudo bash $GITHUB_WORKSPACE/.github/actions/offline-installation/offline-installation.sh
 
