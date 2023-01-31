@@ -33,6 +33,8 @@ jobs:
         with:
           name: script
           path: $GITHUB_WORKSPACE/.github/actions/offline-installation/
+      - name: List files
+        run: ls -l
       - name: Run script
         run: sudo bash $GITHUB_WORKSPACE/.github/actions/offline-installation/offline-installation.sh
 
