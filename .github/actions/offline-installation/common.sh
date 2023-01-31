@@ -56,10 +56,9 @@ function enable_start_service() {
 function download_packages(){
 
     if [ "${sys_type}" == "deb" ]; then
-        sudo bash ./wazuh-install.sh -dw deb
+        sudo bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw deb
     elif [ "${sys_type}" == "rpm" ]; then
-        ls -l
-        bash wazuh-install.sh -dw rpm
+        bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw rpm
     fi
 
     echo "Downloading the resources..."
