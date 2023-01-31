@@ -32,7 +32,8 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: script
-          path: $GITHUB_WORKSPACE/.github/actions/offline-installation/
+      - name: Move unattended script
+        run: cp $GITHUB_WORKSPACE/unattended_installer/wazuh-install.sh $GITHUB_WORKSPACE/.github/actions/offline-installation//wazuh-install.sh
       - name: List files
         run: ls -l $GITHUB_WORKSPACE/.github/actions/offline-installation/
       - name: Run script
