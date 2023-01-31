@@ -58,6 +58,7 @@ function download_packages(){
     if [ "${sys_type}" == "deb" ]; then
         sudo bash ./wazuh-install.sh -dw deb
     elif [ "${sys_type}" == "rpm" ]; then
+        ls -l
         bash wazuh-install.sh -dw rpm
     fi
 
