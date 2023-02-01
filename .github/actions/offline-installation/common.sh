@@ -52,22 +52,29 @@ function check_package() {
 
 function enable_start_service() {
     
-    systemctl daemon-reload
-    systemctl enable "${1}"
-    systemctl start "${1}"
-
-    retries=0
-
-    until [ "$(systemctl status "${1}" | grep "active")" ] || [ "${retries}" -eq 3 ]; do
-        sleep 2
-        retries=$((retries+1))
+    if [ "${sys_type}" == "rpm" ]; then
+        chkconfig --add "${1}"
+        service "${1}" start
+    else
+        systemctl daemon-reload
+        systemctl enable "${1}"
         systemctl start "${1}"
-    done
 
-    if [ ${retries} -eq 3 ]; then
-        echo "The "${1}" service could not be started"
-        exit 1
+        retries=0
+
+        until [ "$(systemctl status "${1}" | grep "active")" ] || [ "${retries}" -eq 3 ]; do
+            sleep 2
+            retries=$((retries+1))
+            systemctl start "${1}"
+        done
+
+        if [ ${retries} -eq 3 ]; then
+            echo "The "${1}" service could not be started"
+            exit 1
+        fi
     fi
+
+    
 
 }
 
