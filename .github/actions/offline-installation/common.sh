@@ -24,7 +24,7 @@ function check_openSSL() {
         if [ "${sys_type}" == "deb" ]; then
             sudo apt install openssl
         elif [ "${sys_type}" == "rpm" ]; then
-            yum install openssl
+            yum install -y openssl
         fi
         
         echo "OpenSSL installation completed."
