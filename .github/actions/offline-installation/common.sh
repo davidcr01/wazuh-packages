@@ -25,7 +25,6 @@ function check_openSSL() {
             sudo apt -y install openssl
         elif [ "${sys_type}" == "rpm" ]; then
             yum install -y openssl
-            yum install -y runuser
         fi
         
         echo "OpenSSL installation completed."
@@ -124,11 +123,7 @@ function indexer_installation(){
 
     sed -i 's|\(network.host: \)"0.0.0.0"|\1"127.0.0.1"|' /etc/wazuh-indexer/opensearch.yml
 
-    if [ "${sys_type}" == "rpm" ]; then
-        runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch -p /run/wazuh-indexer/wazuh-indexer.pid"
-    else
-        enable_start_service "wazuh-indexer"
-    fi
+    enable_start_service "wazuh-indexer"
 
     /usr/share/wazuh-indexer/bin/indexer-security-init.sh
     eval "curl -XGET https://localhost:9200 -u admin:admin -k"
