@@ -16,6 +16,24 @@ function check_system() {
 
 }
 
+function check_openSSL() {
+
+    if [ -z "$(command -v openssl)" ]; then
+        echo "OpenSSL not installed. Installing..."
+        
+        if [ "${sys_type}" == "deb" ]; then
+            sudo apt install openssl
+        elif [ "${sys_type}" == "rpm" ]; then
+            yum install openssl
+        fi
+        
+        echo "OpenSSL installation completed."
+    fi
+
+    check_package "openssl"
+
+}
+
 function check_package() {
 
     if [ "${sys_type}" == "deb" ]; then
@@ -172,6 +190,7 @@ function filebeat_installation(){
 function dashboard_installation(){
 
     install_package "wazuh-dashboard"
+    check_package "wazuh-dashboard"
 
     NODE_NAME=dashboard
     mkdir /etc/wazuh-dashboard/certs
