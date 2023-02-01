@@ -205,7 +205,7 @@ function dashboard_installation(){
 
     sleep 10
 
-    if [ "$(curl -k -I -w "%{http_code}" https://localhost)" -ne "302" ]; then
+    if [ "$(curl -k -I -w "%{http_code}" https://localhost -o /dev/null)" -ne "302" ]; then
         echo "Error: The Wazuh dashboard installation has failed."
         exit 1
     fi
