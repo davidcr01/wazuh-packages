@@ -22,7 +22,7 @@ function check_openSSL() {
         echo "OpenSSL not installed. Installing..."
         
         if [ "${sys_type}" == "deb" ]; then
-            sudo apt install openssl
+            sudo apt -y install openssl
         elif [ "${sys_type}" == "rpm" ]; then
             yum install -y openssl
         fi
@@ -202,6 +202,8 @@ function dashboard_installation(){
     chown -R wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs
 
     enable_start_service "wazuh-dashboard"
+
+    sleep 10
 
     if [ "$(curl -k -I -w "%{http_code}" https://localhost -o /dev/null --silent)" -ne "302" ]; then
         echo "Error: The Wazuh dashboard installation has failed."
