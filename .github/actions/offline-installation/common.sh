@@ -51,27 +51,18 @@ function check_package() {
 
 }
 
-function common_systemctl() {
-
-    if [ "${sys_type}" == "rpm" ]; then
-        python2 /usr/local/bin/systemctl "$@"
-    elif [ "${sys_type}" == "deb" ]; then
-        systemctl "$@"
-    fi
-}
-
 function enable_start_service() {
     
-    common_systemctl daemon-reload
-    common_systemctl enable "${1}"
-    common_systemctl start "${1}"
+    systemctl daemon-reload
+    systemctl enable "${1}"
+    systemctl start "${1}"
 
     retries=0
 
-    until [ "$(common_systemctl status "${1}" | grep "active")" ] || [ "${retries}" -eq 3 ]; do
+    until [ "$(systemctl status "${1}" | grep "active")" ] || [ "${retries}" -eq 3 ]; do
         sleep 2
         retries=$((retries+1))
-        common_systemctl start "${1}"
+        systemctl start "${1}"
     done
 
     if [ ${retries} -eq 3 ]; then
@@ -87,9 +78,6 @@ function download_packages(){
         sudo bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw deb
     elif [ "${sys_type}" == "rpm" ]; then
         bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw rpm
-        curl https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -o /usr/local/bin/systemctl
-        yum -y install python2
-        yum -y install initscripts
     fi
 
     echo "Downloading the resources..."
@@ -135,9 +123,14 @@ function indexer_installation(){
     chown -R wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs
 
     sed -i 's|\(network.host: \)"0.0.0.0"|\1"127.0.0.1"|' /etc/wazuh-indexer/opensearch.yml
-    enable_start_service "wazuh-indexer"
-
     /usr/share/wazuh-indexer/bin/indexer-security-init.sh
+
+    if [ "${sys_type}" == "rpm" ]; then
+        runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch"
+    else
+        enable_start_service "wazuh-indexer"
+    fi
+
     eval "curl -XGET https://localhost:9200 -u admin:admin -k"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "Error: The Wazuh indexer installation has failed."
