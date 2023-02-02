@@ -7,7 +7,7 @@ ABSOLUTE_PATH="$( cd $(dirname ${0}) ; pwd -P )"
 set -x
 
 check_system
-check_openSSL
+install_dependencies
 download_packages
 
 indexer_installation

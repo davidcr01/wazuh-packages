@@ -16,38 +16,73 @@ function check_system() {
 
 }
 
-function check_openSSL() {
+function install_dependencies() {
 
-    if [ -z "$(command -v openssl)" ]; then
-        echo "OpenSSL not installed. Installing..."
-        
-        if [ "${sys_type}" == "deb" ]; then
-            sudo apt -y install openssl
-        elif [ "${sys_type}" == "rpm" ]; then
-            yum install -y openssl
-            yum install -y runuser
+    if [ "${sys_type}" == "rpm" ]; then
+        dependencies=( util-linux initscripts openssl )
+        not_installed=()
+        for dep in "${dependencies[@]}"; do
+            if [ "${dep}" == "openssl" ]; then
+                if ! yum list installed 2>/dev/null | grep -q "${dep}\.";then
+                    not_installed+=("${dep}")
+                fi
+            elif ! yum list installed 2>/dev/null | grep -q "${dep}";then
+                not_installed+=("${dep}")
+            fi
+        done
+
+        if [ "${#not_installed[@]}" -gt 0 ]; then
+            echo "--- Dependencies ---"
+            for dep in "${not_installed[@]}"; do
+                echo "Installing $dep."
+                eval "yum install ${dep} -y"
+                if [  "${PIPESTATUS[0]}" != 0  ]; then
+                    echo "Cannot install dependency: ${dep}."
+                    exit 1
+                fi
+            done
         fi
-        
-        echo "OpenSSL installation completed."
-    fi
 
-    check_package "openssl"
+    elif [ "${sys_type}" == "deb" ]; then
+        eval "apt-get update -q"
+        dependencies=( openssl )
+        not_installed=()
+
+        for dep in "${dependencies[@]}"; do
+            if ! apt list --installed 2>/dev/null | grep -q "${dep}"; then
+                not_installed+=("${dep}")
+            fi
+        done
+
+        if [ "${#not_installed[@]}" -gt 0 ]; then
+            echo "--- Dependencies ----"
+            for dep in "${not_installed[@]}"; do
+                echo "Installing $dep."
+                apt-get install -y "${dep}"
+                if [ "${install_result}" != 0 ]; then
+                    echo "Cannot install dependency: ${dep}."
+                    exit 1
+                fi
+            done
+        fi
+    fi
 
 }
 
 function check_package() {
 
     if [ "${sys_type}" == "deb" ]; then
-        if [ ! "$(dpkg --list | grep "${1}")" ]; then
+        if ! apt list --installed 2>/dev/null | grep -q "${1}"; then
             echo "The package "${1}" is not installed."
-            exit 1
+            return 1
         fi
     elif [ "${sys_type}" == "rpm" ]; then
-        if [ ! "$(rpm -qa | grep "${1}")" ]; then
+        if ! yum list installed 2>/dev/null | grep -q "${1}"; then
             echo "The package "${1}" is not installed."
-            exit 1
+            return 1
         fi
     fi
+    return 0
 
 }
 
@@ -123,14 +158,17 @@ function indexer_installation(){
     chown -R wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs
 
     sed -i 's|\(network.host: \)"0.0.0.0"|\1"127.0.0.1"|' /etc/wazuh-indexer/opensearch.yml
-    /usr/share/wazuh-indexer/bin/indexer-security-init.sh
 
     if [ "${sys_type}" == "rpm" ]; then
-        runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch"
-    else
+        /usr/share/wazuh-indexer/bin/indexer-security-init.sh
+        runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch" > /dev/null 1>&2 &
+    elif [ "${sys_type}" == "deb" ]; then
         enable_start_service "wazuh-indexer"
     fi
 
+    /usr/share/wazuh-indexer/bin/indexer-security-init.sh
+
+    sleep 5
     eval "curl -XGET https://localhost:9200 -u admin:admin -k"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "Error: The Wazuh indexer installation has failed."
@@ -154,7 +192,13 @@ function manager_installation(){
     install_package "wazuh-manager"
     check_package "wazuh-manager"
 
-    enable_start_service "wazuh-manager"
+    if [ "${sys_type}" == "deb" ]; then
+        enable_start_service "wazuh-manager"
+    elif [ "${sys_type}" == "rpm" ]; then
+        /var/ossec/bin/wazuh-control start
+    fi 
+
+    
 
 }
 
@@ -182,7 +226,11 @@ function filebeat_installation(){
     chmod 400 /etc/filebeat/certs/*
     chown -R root:root /etc/filebeat/certs
 
-    enable_start_service "filebeat"
+    if [ "${sys_type}" == "deb" ]; then
+        enable_start_service "filebeat"
+    elif [ "${sys_type}" == "rpm" ]; then
+        /usr/share/filebeat/bin/filebeat --environment systemd -c /etc/filebeat/filebeat.yml --path.home /usr/share/filebeat --path.config /etc/filebeat --path.data /var/lib/filebeat --path.logs /var/log/filebeat
+    fi    
 
     eval "filebeat test output"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
@@ -206,7 +254,11 @@ function dashboard_installation(){
     chmod 400 /etc/wazuh-dashboard/certs/*
     chown -R wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs
 
-    enable_start_service "wazuh-dashboard"
+    if [ "${sys_type}" == "deb" ]; then
+        enable_start_service "wazuh-dashboard"
+    elif [ "${sys_type}" == "rpm" ]; then
+        /usr/share/wazuh-dashboard/bin/opensearch-dashboards "-c /etc/wazuh-dashboard/opensearch_dashboards.yml" --allow-root
+    fi  
 
     sleep 10
 
