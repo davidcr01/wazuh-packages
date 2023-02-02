@@ -161,7 +161,7 @@ function indexer_installation(){
 
     if [ "${sys_type}" == "rpm" ]; then
         runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch" > /dev/null 1>&2 &
-        sleep 10
+        sleep 20
     elif [ "${sys_type}" == "deb" ]; then
         enable_start_service "wazuh-indexer"
     fi
