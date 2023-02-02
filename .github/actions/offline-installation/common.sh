@@ -25,6 +25,7 @@ function check_openSSL() {
             sudo apt -y install openssl
         elif [ "${sys_type}" == "rpm" ]; then
             yum install -y openssl
+            yum install -y runuser
         fi
         
         echo "OpenSSL installation completed."
@@ -123,7 +124,11 @@ function indexer_installation(){
 
     sed -i 's|\(network.host: \)"0.0.0.0"|\1"127.0.0.1"|' /etc/wazuh-indexer/opensearch.yml
 
-    enable_start_service "wazuh-indexer"
+    if [ "${sys_type}" == "rpm" ]; then
+        runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch"
+    else
+        enable_start_service "wazuh-indexer"
+    fi
 
     /usr/share/wazuh-indexer/bin/indexer-security-init.sh
     eval "curl -XGET https://localhost:9200 -u admin:admin -k"
@@ -205,7 +210,7 @@ function dashboard_installation(){
 
     sleep 10
 
-    if [ "$(curl -k -I -w "%{http_code}" https://localhost -o /dev)" -ne "302" ]; then
+    if [ "$(curl -k -I -w "%{http_code}" https://localhost -o /dev/null)" -ne "302" ]; then
         echo "Error: The Wazuh dashboard installation has failed."
         exit 1
     fi
