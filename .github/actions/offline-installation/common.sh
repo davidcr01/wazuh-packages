@@ -89,6 +89,7 @@ function download_packages(){
         bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw rpm
         curl https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -o /usr/local/bin/systemctl
         yum -y install python2
+        yum -y install initscripts
     fi
 
     echo "Downloading the resources..."
