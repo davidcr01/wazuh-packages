@@ -168,7 +168,7 @@ function indexer_installation(){
 
     /usr/share/wazuh-indexer/bin/indexer-security-init.sh
 
-    sleep 5
+    sleep 10
     eval "curl -XGET https://localhost:9200 -u admin:admin -k"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "Error: The Wazuh indexer installation has failed."

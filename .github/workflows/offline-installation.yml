@@ -34,8 +34,6 @@ jobs:
           name: script
       - name: Move unattended script
         run: cp $GITHUB_WORKSPACE/wazuh-install.sh $GITHUB_WORKSPACE/.github/actions/offline-installation/wazuh-install.sh
-      - name: List files
-        run: ls -l $GITHUB_WORKSPACE/.github/actions/offline-installation/
       - name: Run script
         run: sudo bash $GITHUB_WORKSPACE/.github/actions/offline-installation/offline-installation.sh
 
@@ -49,7 +47,5 @@ jobs:
           name: script
       - name: Move unattended script
         run: cp $GITHUB_WORKSPACE/wazuh-install.sh $GITHUB_WORKSPACE/.github/actions/offline-installation/wazuh-install.sh
-      - name: List files
-        run: ls -l $GITHUB_WORKSPACE/.github/actions/offline-installation/
       - name: Launch docker and run script
         run: sudo docker run -v $GITHUB_WORKSPACE/.github/actions/offline-installation/:/tests centos:centos7 bash /tests/offline-installation.sh
