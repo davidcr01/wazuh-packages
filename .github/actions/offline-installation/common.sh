@@ -74,7 +74,7 @@ function dashboard_installation() {
 
 function download_resources() {
 
-
+    check_file "${ABSOLUTE_PATH}"/wazuh-install.sh 
     bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw "${sys_type}"
     echo "Downloading the resources..."
 
@@ -161,6 +161,25 @@ function filebeat_installation() {
 
 }
 
+function indexer_initialize() {
+
+    retries=0
+
+    until [ $(cat /var/log/wazuh-indexer/wazuh-cluster.log | grep "Node started") ] || [ "${retries}" -eq 5 ]; do
+        sleep 5
+        retries=$((retries+1))
+    done
+
+    if [ ${retries} -eq 5 ]; then
+        echo "The wazuh-indexer is not started"
+        exit 1
+    else
+        /usr/share/wazuh-indexer/bin/indexer-security-init.sh
+    fi
+
+
+}
+
 function indexer_installation() {
 
     if [ "${sys_type}" == "rpm" ]; then
@@ -191,8 +210,7 @@ function indexer_installation() {
         enable_start_service "wazuh-indexer"
     fi
 
-    /usr/share/wazuh-indexer/bin/indexer-security-init.sh
-
+    indexer_initialize
     sleep 10
     eval "curl -XGET https://localhost:9200 -u admin:admin -k --fail"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
