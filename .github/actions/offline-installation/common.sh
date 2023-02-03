@@ -65,7 +65,7 @@ function dashboard_installation() {
     sleep 10
 
     # In this context, 302 HTTP code refers to SSL certificates warning: success. 
-    if [ "$(curl -k -I -w "%{http_code}" https://localhost -o /dev/null --fail)" -ne "302" ]; then
+    if [ "$(curl -k -s -I -w "%{http_code}" https://localhost -o /dev/null --fail)" -ne "302" ]; then
         echo "ERROR: The Wazuh dashboard installation has failed."
         exit 1
     fi
@@ -152,7 +152,7 @@ function filebeat_installation() {
         /usr/share/filebeat/bin/filebeat --environment systemd -c /etc/filebeat/filebeat.yml --path.home /usr/share/filebeat --path.config /etc/filebeat --path.data /var/lib/filebeat --path.logs /var/log/filebeat &
     fi    
 
-    sleep 5
+    sleep 10
     curl -s -k -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards"
     eval "filebeat test output"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
