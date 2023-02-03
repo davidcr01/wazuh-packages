@@ -53,7 +53,7 @@ function check_shards() {
         echo "ERROR: Could not get the number of shards"
         exit 1
     fi
-    curl -s -k -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards
+    curl -s -k -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards"
     echo "INFO: Number of shards detected."
 
 }
