@@ -32,7 +32,7 @@ function check_system() {
 
 }
 
-function dashboard_installation(){
+function dashboard_installation() {
 
     install_package "wazuh-dashboard"
     check_package "wazuh-dashboard"
@@ -54,6 +54,7 @@ function dashboard_installation(){
 
     sleep 10
 
+    # 302 HTTP code 
     if [ "$(curl -k -I -w "%{http_code}" https://localhost -o /dev/null)" -ne "302" ]; then
         echo "Error: The Wazuh dashboard installation has failed."
         exit 1
@@ -180,10 +181,10 @@ function indexer_installation() {
         enable_start_service "wazuh-indexer"
     fi
 
-    /usr/share/wazuh-indexer/bin/indexer-security-init.sh
+    # /usr/share/wazuh-indexer/bin/indexer-security-init.sh
 
     sleep 10
-    eval "curl -XGET https://localhost:9200 -u admin:admin -k"
+    eval "curl -XGET https://localhost:9200 -u admin:admin -k --fail"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "Error: The Wazuh indexer installation has failed."
         exit 1
@@ -254,7 +255,7 @@ function install_package() {
 
 }
 
-function manager_installation(){
+function manager_installation() {
 
     install_package "wazuh-manager"
     check_package "wazuh-manager"
