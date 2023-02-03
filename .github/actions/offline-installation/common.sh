@@ -165,7 +165,7 @@ function indexer_initialize() {
 
     retries=0
 
-    until [ $(cat /var/log/wazuh-indexer/wazuh-cluster.log | grep "Node started") ] || [ "${retries}" -eq 5 ]; do
+    until [ "$(cat /var/log/wazuh-indexer/wazuh-cluster.log | grep "Node started")" ] || [ "${retries}" -eq 5 ]; do
         sleep 5
         retries=$((retries+1))
     done
