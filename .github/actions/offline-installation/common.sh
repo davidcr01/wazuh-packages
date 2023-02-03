@@ -65,10 +65,11 @@ function dashboard_installation() {
     sleep 10
 
     # In this context, 302 HTTP code refers to SSL certificates warning: success. 
-    if [ "$(curl -k -s -I -w "%{http_code}" https://localhost --fail)" -ne "302" ]; then
+    if [ "$(curl -k -s -I -w "%{http_code}" https://localhost -o /dev/null --fail)" -ne "302" ]; then
         echo "ERROR: The Wazuh dashboard installation has failed."
         exit 1
     fi
+    echo "INFO: The Wazuh dashboard is ready."
 
 }
 
