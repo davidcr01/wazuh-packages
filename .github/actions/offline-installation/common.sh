@@ -152,7 +152,7 @@ function filebeat_installation() {
         /usr/share/filebeat/bin/filebeat --environment systemd -c /etc/filebeat/filebeat.yml --path.home /usr/share/filebeat --path.config /etc/filebeat --path.data /var/lib/filebeat --path.logs /var/log/filebeat &
     fi    
 
-    curl -k -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards"
+    curl -k -s -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards"
     eval "filebeat test output"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "ERROR: The Filebeat installation has failed."
@@ -212,7 +212,7 @@ function indexer_installation() {
 
     indexer_initialize
     sleep 10
-    eval "curl -XGET https://localhost:9200 -u admin:admin -k --fail"
+    eval "curl -s -XGET https://localhost:9200 -u admin:admin -k --fail"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "ERROR: The Wazuh indexer installation has failed."
         exit 1
