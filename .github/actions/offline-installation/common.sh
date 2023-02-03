@@ -41,6 +41,22 @@ function check_file() {
 
 }
 
+function check_shards() {
+
+    retries=0
+    until [ "$(curl -s -k -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards" | grep "number_of_shards")" ] || [ "${retries}" -eq 5 ]; do
+        sleep 5
+        retries=$((retries+1))
+    done
+
+    if [ ${retries} -eq 5 ]; then
+        echo "ERROR: Could not get the number of shards"
+        exit 1
+    fi
+    echo "INFO: Number of shards detected."
+
+}
+
 function dashboard_installation() {
 
     install_package "wazuh-dashboard"
@@ -108,7 +124,6 @@ function enable_start_service() {
     systemctl start "${1}"
 
     retries=0
-
     until [ "$(systemctl status "${1}" | grep "active")" ] || [ "${retries}" -eq 3 ]; do
         sleep 2
         retries=$((retries+1))
@@ -154,7 +169,6 @@ function filebeat_installation() {
     fi    
 
     sleep 10
-    curl -s -k -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards"
     eval "filebeat test output"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "ERROR: The Filebeat installation has failed."
@@ -166,7 +180,6 @@ function filebeat_installation() {
 function indexer_initialize() {
 
     retries=0
-
     until [ "$(cat /var/log/wazuh-indexer/wazuh-cluster.log | grep "Node started")" ] || [ "${retries}" -eq 5 ]; do
         sleep 5
         retries=$((retries+1))
@@ -175,10 +188,8 @@ function indexer_initialize() {
     if [ ${retries} -eq 5 ]; then
         echo "ERROR: The wazuh-indexer is not started"
         exit 1
-    else
-        /usr/share/wazuh-indexer/bin/indexer-security-init.sh
     fi
-
+    /usr/share/wazuh-indexer/bin/indexer-security-init.sh
 
 }
 
