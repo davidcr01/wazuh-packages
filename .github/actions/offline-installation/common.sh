@@ -4,12 +4,12 @@ function check_package() {
 
     if [ "${sys_type}" == "deb" ]; then
         if ! apt list --installed 2>/dev/null | grep -q "${1}"; then
-            echo "The package "${1}" is not installed."
+            echo "INFO: The package "${1}" is not installed."
             return 1
         fi
     elif [ "${sys_type}" == "rpm" ]; then
         if ! yum list installed 2>/dev/null | grep -q "${1}"; then
-            echo "The package "${1}" is not installed."
+            echo "INFO: The package "${1}" is not installed."
             return 1
         fi
     fi
@@ -21,12 +21,12 @@ function check_system() {
 
     if [ -n "$(command -v yum)" ]; then
         sys_type="rpm"
-        echo "RPM system detected."
+        echo "INFO: RPM system detected."
     elif [ -n "$(command -v apt-get)" ]; then
         sys_type="deb"
-        echo "DEB system detected."
+        echo "INFO: DEB system detected."
     else
-        echo "Error: could not detect the system."
+        echo "ERROR: could not detect the system."
         exit 1
     fi
 
@@ -35,7 +35,7 @@ function check_system() {
 function check_file() {
 
     if [ ! -f "${1}" ]; then
-        echo "The ${1} file could not be downloaded"
+        echo "ERROR: The ${1} file could not be downloaded"
         exit 1
     fi
 
@@ -46,7 +46,7 @@ function dashboard_installation() {
     install_package "wazuh-dashboard"
     check_package "wazuh-dashboard"
 
-    echo "Generating certificates of the Wazuh dashboard..."
+    echo "INFO: Generating certificates of the Wazuh dashboard..."
     NODE_NAME=dashboard
     mkdir /etc/wazuh-dashboard/certs
     mv -n wazuh-certificates/$NODE_NAME.pem /etc/wazuh-dashboard/certs/dashboard.pem
@@ -66,7 +66,7 @@ function dashboard_installation() {
 
     # 302 HTTP code 
     if [ "$(curl -k -I -w "%{http_code}" https://localhost -o /dev/null --fail)" -ne "302" ]; then
-        echo "Error: The Wazuh dashboard installation has failed."
+        echo "ERROR: The Wazuh dashboard installation has failed."
         exit 1
     fi
 
@@ -76,7 +76,7 @@ function download_resources() {
 
     check_file "${ABSOLUTE_PATH}"/wazuh-install.sh 
     bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw "${sys_type}"
-    echo "Downloading the resources..."
+    echo "INFO: Downloading the resources..."
 
     curl -sO https://packages.wazuh.com/4.3/config.yml
     check_file "config.yml"
@@ -91,10 +91,10 @@ function download_resources() {
     ./wazuh-certs-tool.sh --all
 
     tar xf wazuh-offline.tar.gz
-    echo "Download finished."
+    echo "INFO: Download finished."
 
     if [ ! -d ./wazuh-offline ]; then
-        echo "Error: could not download the resources."
+        echo "ERROR: could not download the resources."
         exit 1
     fi
 
@@ -115,7 +115,7 @@ function enable_start_service() {
     done
 
     if [ ${retries} -eq 3 ]; then
-        echo "The "${1}" service could not be started"
+        echo "ERROR: The "${1}" service could not be started"
         exit 1
     fi
 
@@ -136,7 +136,7 @@ function filebeat_installation() {
     echo admin | filebeat keystore add password --stdin --force
     tar -xzf ./wazuh-offline/wazuh-files/wazuh-filebeat-0.2.tar.gz -C /usr/share/filebeat/module
 
-    echo "Generating certificates of Filebeat..."
+    echo "INFO: Generating certificates of Filebeat..."
     NODE_NAME=wazuh-1
     mkdir /etc/filebeat/certs
     mv -n wazuh-certificates/$NODE_NAME.pem /etc/filebeat/certs/filebeat.pem
@@ -155,7 +155,7 @@ function filebeat_installation() {
     curl -k -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards"
     eval "filebeat test output"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
-        echo "Error: The Filebeat installation has failed."
+        echo "ERROR: The Filebeat installation has failed."
         exit 1
     fi
 
@@ -171,7 +171,7 @@ function indexer_initialize() {
     done
 
     if [ ${retries} -eq 5 ]; then
-        echo "The wazuh-indexer is not started"
+        echo "ERROR: The wazuh-indexer is not started"
         exit 1
     else
         /usr/share/wazuh-indexer/bin/indexer-security-init.sh
@@ -189,7 +189,7 @@ function indexer_installation() {
     install_package "wazuh-indexer" 
     check_package "wazuh-indexer"
     
-    echo "Generating certificates of the Wazuh indexer..."
+    echo "INFO: Generating certificates of the Wazuh indexer..."
     NODE_NAME=node-1
     mkdir /etc/wazuh-indexer/certs
     mv -n wazuh-certificates/$NODE_NAME.pem /etc/wazuh-indexer/certs/indexer.pem
@@ -205,7 +205,7 @@ function indexer_installation() {
 
     if [ "${sys_type}" == "rpm" ]; then
         runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch" > /dev/null 2>&1 &
-        sleep 2
+        sleep 5
     elif [ "${sys_type}" == "deb" ]; then
         enable_start_service "wazuh-indexer"
     fi
@@ -214,7 +214,7 @@ function indexer_installation() {
     sleep 10
     eval "curl -XGET https://localhost:9200 -u admin:admin -k --fail"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
-        echo "Error: The Wazuh indexer installation has failed."
+        echo "ERROR: The Wazuh indexer installation has failed."
         exit 1
     fi
 
@@ -241,7 +241,7 @@ function install_dependencies() {
                 echo "Installing $dep."
                 eval "yum install ${dep} -y"
                 if [  "${PIPESTATUS[0]}" != 0  ]; then
-                    echo "Cannot install dependency: ${dep}."
+                    echo "ERROR: Cannot install dependency: ${dep}."
                     exit 1
                 fi
             done
@@ -264,7 +264,7 @@ function install_dependencies() {
                 echo "Installing $dep."
                 apt-get install -y "${dep}"
                 if [ "${install_result}" != 0 ]; then
-                    echo "Cannot install dependency: ${dep}."
+                    echo "ERROR: Cannot install dependency: ${dep}."
                     exit 1
                 fi
             done
