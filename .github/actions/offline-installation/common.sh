@@ -32,11 +32,21 @@ function check_system() {
 
 }
 
+function check_file() {
+
+    if [ ! -f "${1}" ]; then
+        echo "The ${1} file could not be downloaded"
+        exit 1
+    fi
+
+}
+
 function dashboard_installation() {
 
     install_package "wazuh-dashboard"
     check_package "wazuh-dashboard"
 
+    echo "Generating certificates of the Wazuh dashboard..."
     NODE_NAME=dashboard
     mkdir /etc/wazuh-dashboard/certs
     mv -n wazuh-certificates/$NODE_NAME.pem /etc/wazuh-dashboard/certs/dashboard.pem
@@ -64,20 +74,19 @@ function dashboard_installation() {
 
 function download_resources() {
 
-    if [ "${sys_type}" == "deb" ]; then
-        bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw deb
-    elif [ "${sys_type}" == "rpm" ]; then
-        bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw rpm
-    fi
 
+    bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw "${sys_type}"
     echo "Downloading the resources..."
+
     curl -sO https://packages.wazuh.com/4.3/config.yml
+    check_file "config.yml"
 
     sed -i -e '0,/<indexer-node-ip>/ s/<indexer-node-ip>/127.0.0.1/' config.yml
     sed -i -e '0,/<wazuh-manager-ip>/ s/<wazuh-manager-ip>/127.0.0.1/' config.yml
     sed -i -e '0,/<dashboard-node-ip>/ s/<dashboard-node-ip>/127.0.0.1/' config.yml
 
     curl -sO https://packages.wazuh.com/4.3/wazuh-certs-tool.sh
+    check_file "wazuh-certs-tool.sh"
     chmod 744 wazuh-certs-tool.sh
     ./wazuh-certs-tool.sh --all
 
@@ -127,6 +136,7 @@ function filebeat_installation() {
     echo admin | filebeat keystore add password --stdin --force
     tar -xzf ./wazuh-offline/wazuh-files/wazuh-filebeat-0.2.tar.gz -C /usr/share/filebeat/module
 
+    echo "Generating certificates of Filebeat..."
     NODE_NAME=wazuh-1
     mkdir /etc/filebeat/certs
     mv -n wazuh-certificates/$NODE_NAME.pem /etc/filebeat/certs/filebeat.pem
