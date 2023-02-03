@@ -62,10 +62,10 @@ function dashboard_installation() {
 
 }
 
-function download_packages() {
+function download_resources() {
 
     if [ "${sys_type}" == "deb" ]; then
-        sudo bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw deb
+        bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw deb
     elif [ "${sys_type}" == "rpm" ]; then
         bash "${ABSOLUTE_PATH}"/wazuh-install.sh -dw rpm
     fi

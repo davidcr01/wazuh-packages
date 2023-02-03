@@ -8,7 +8,7 @@ set -x
 
 check_system
 install_dependencies
-download_packages
+download_resources
 
 indexer_installation
 echo "Wazuh indexer installation completed."
