@@ -169,6 +169,7 @@ function filebeat_installation() {
     fi    
 
     sleep 10
+    check_shards
     eval "filebeat test output"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
         echo "ERROR: The Filebeat installation has failed."
