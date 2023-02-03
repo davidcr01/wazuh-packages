@@ -248,7 +248,7 @@ function install_dependencies() {
         fi
 
     elif [ "${sys_type}" == "deb" ]; then
-        eval "apt-get update -q"
+        eval "apt-get update -q > /dev/null"
         dependencies=( openssl )
         not_installed=()
 
