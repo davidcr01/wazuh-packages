@@ -49,7 +49,7 @@ function dashboard_installation(){
     if [ "${sys_type}" == "deb" ]; then
         enable_start_service "wazuh-dashboard"
     elif [ "${sys_type}" == "rpm" ]; then
-        /usr/share/wazuh-dashboard/bin/opensearch-dashboards "-c /etc/wazuh-dashboard/opensearch_dashboards.yml" --allow-root
+        /usr/share/wazuh-dashboard/bin/opensearch-dashboards "-c /etc/wazuh-dashboard/opensearch_dashboards.yml" --allow-root &
     fi  
 
     sleep 10
