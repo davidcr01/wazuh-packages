@@ -204,7 +204,8 @@ function indexer_installation() {
     sed -i 's|\(network.host: \)"0.0.0.0"|\1"127.0.0.1"|' /etc/wazuh-indexer/opensearch.yml
 
     if [ "${sys_type}" == "rpm" ]; then
-        runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch" > /dev/null 1>&2 &
+        runuser "wazuh-indexer" --shell="/bin/bash" --command="OPENSEARCH_PATH_CONF=/etc/wazuh-indexer /usr/share/wazuh-indexer/bin/opensearch" > /dev/null 2>&1 &
+        sleep 2
     elif [ "${sys_type}" == "deb" ]; then
         enable_start_service "wazuh-indexer"
     fi
