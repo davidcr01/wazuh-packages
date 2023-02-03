@@ -152,6 +152,7 @@ function filebeat_installation() {
         /usr/share/filebeat/bin/filebeat --environment systemd -c /etc/filebeat/filebeat.yml --path.home /usr/share/filebeat --path.config /etc/filebeat --path.data /var/lib/filebeat --path.logs /var/log/filebeat &
     fi    
 
+    sleep 5
     curl -k -u admin:admin "https://localhost:9200/_template/wazuh?pretty&filter_path=wazuh.settings.index.number_of_shards"
     eval "filebeat test output"
     if [ "${PIPESTATUS[0]}" != 0 ]; then
