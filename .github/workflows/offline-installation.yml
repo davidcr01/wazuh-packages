@@ -1,5 +1,6 @@
 name: Offline installation test
 on:
+  push:
   pull_request:
     paths:
       - 'unattended_installer/install_functions/wazuh-offline-download.sh'
